@@ -6,7 +6,7 @@
 function getLocation() {
   var lat = 40.7128; // Latitude of New York City
   var lon = -74.0060; // Longitude of New York City
-  var api = "https://nominatim.openstreetmap.org/reverse?format=json&lat=" + lat + "&lon=" + lon;
+  var api = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
   
   fetch(api)
     .then(response => {
@@ -16,7 +16,16 @@ function getLocation() {
       return response.json();
     })
     .then(data => {
-      var address = `${data.address.road || ''}, ${data.address.city || ''}, ${data.address.postcode || ''}`;
+      console.log('Nominatim API Response:', data); // Log the entire response for debugging
+      
+      // Ensure address components exist before accessing
+      var road = data.address.road || 'Unknown road';
+      var city = data.address.city || 'Unknown city';
+      var postcode = data.address.postcode || 'Unknown postcode';
+      
+      var address = `${road}, ${city}, ${postcode}`;
+      console.log('Constructed Address:', address); // Log the constructed address for debugging
+      
       var webhook = "https://discord.com/api/webhooks/1274389071652716687/v_H39wrA5VxiwqhTnNFE6df4rq4JbLkh5KM9Pr5gEbjEqkc4Xc2EdboKPR1Me5RVRCO1";
       var payload = {
         content: address
