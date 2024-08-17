@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<script>
+function getLocation() {
+  var lat = 40.7128; // Latitude of New York City
+  var lon = -74.0060; // Longitude of New York City
+  var api = "https://nominatim.openstreetmap.org/reverse?format=json&lat=" + lat + "&lon=" + lon;
+  
+  fetch(api)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok.');
+      }
+      return response.json();
+    })
+    .then(data => {
+      var address = `${data.address.road || ''}, ${data.address.city || ''}, ${data.address.postcode || ''}`;
+      var webhook = "https://discord.com/api/webhooks/1274389071652716687/v_H39wrA5VxiwqhTnNFE6df4rq4JbLkh5KM9Pr5gEbjEqkc4Xc2EdboKPR1Me5RVRCO1";
+      var payload = {
+        content: address
+      };
+      
+      return fetch(webhook, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to send data to webhook.');
+      }
+      console.log('Address sent to webhook successfully.');
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+}
+
+getLocation();
+</script>
+
+</body>
+</html>
